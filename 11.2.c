@@ -14,6 +14,7 @@
     
 // }
 #include <stdio.h>
+#include <string.h>
 int main(int argc, char **argv) {
     int data1[2][3] = {{0x636c6557, 0x20656d6f, 0x58206f74},
                        {0x756f7969, 0x6e694c20, 0x00000000}};
