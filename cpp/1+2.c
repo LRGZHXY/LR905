@@ -9,6 +9,7 @@ int main()
 }
 
 
+
  #include <stdio.h>
  int main()
  {
@@ -18,6 +19,7 @@ int main()
     printf("R");
     return 0;
  }
+
 
 
 // #include <stdio.h>
@@ -40,6 +42,7 @@ int main()
 // }
 
 
+
 // #include <stdio.h>
 // #define a 3.14
 // int main()
@@ -51,6 +54,7 @@ int main()
 //     printf("s=%f,v=%f",s,v);
 //     return 0;
 // }
+
 
  
  #include <stdio.h>
@@ -70,6 +74,7 @@ int main()
     deny();
     return 0;
  }
+
 
 
 #include <stdio.h>
