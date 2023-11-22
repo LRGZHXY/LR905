@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/lr/LR905",
-      "program": "/home/lr/LR905/build/Debug/outDebug",
+      "cwd": "/home/lr/LR905/cpp",
+      "program": "/home/lr/LR905/cpp/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
