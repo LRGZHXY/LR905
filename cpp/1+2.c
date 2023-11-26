@@ -10,15 +10,18 @@ int main()
 
 
 
- #include <stdio.h>
- int main()
- {
-    printf("L R\n");
-    printf("L\nR\n ");
-    printf("L ");
-    printf("R");
+#include <stdio.h>
+
+int main(void)
+{
+    int age = 18, days_per_year = 365;
+    int days = age * days_per_year;
+    
+    printf("I am %d years old.\n", age);
+    printf("Days are %d.\n", days);
+
     return 0;
- }
+}
 
 
 
