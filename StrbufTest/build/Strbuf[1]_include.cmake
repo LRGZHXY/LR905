@@ -1,0 +1,5 @@
+if(EXISTS "/home/lr/StrbufTest/build/Strbuf[1]_tests.cmake")
+  include("/home/lr/StrbufTest/build/Strbuf[1]_tests.cmake")
+else()
+  add_test(Strbuf_NOT_BUILT Strbuf_NOT_BUILT)
+endif()
