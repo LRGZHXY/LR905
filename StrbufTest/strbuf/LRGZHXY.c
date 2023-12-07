@@ -169,6 +169,47 @@ void strbuf_insert(struct strbuf *sb, size_t pos, const void *data, size_t len)
 
 
 
+/*C*/
+//1
+void strbuf_ltrim(struct strbuf *sb)
+{
+     size_t i=0;
+     while(i<sb->len&&(sb->buf[i]==' '||sb->buf[i]=='\t'))
+     {
+          i++;
+     }
+     memmove(sb->buf,sb->buf+i,sb->len-i);
+     sb->len-=i;
+}
+//2
+void strbuf_rtrim(struct strbuf *sb)
+{
+     size_t i=sb->len;
+     while(i>0&&(sb->buf[i-1]==' '||sb->buf[i-1]=='\t'))
+     {
+          i--;
+     }
+     sb->len=i;
+     sb->buf[sb->len]='\0';
+}
+//3
+void strbuf_remove(struct strbuf *sb, size_t pos, size_t len)
+{
+     if(pos>=sb->len)
+     {
+          return;
+     }
+     size_t end_pos=pos+len;
+     if(end_pos>sb->len)
+     {
+          end_pos=sb->len;
+     }
+     memmove(sb->buf+pos,sb->buf+end_pos,sb->len-end_pos);
+     sb->len-=(end_pos-pos);
+     sb->buf[sb->len]='\0';
+}
+
+
 
 
 
