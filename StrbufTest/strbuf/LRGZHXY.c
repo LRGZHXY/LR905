@@ -218,9 +218,7 @@ void strbuf_remove(struct strbuf *sb, size_t pos, size_t len)
 
 
 
-void strbuf_rtrim(struct strbuf *sb){return;}
-void strbuf_ltrim(struct strbuf *sb){return;}
-void strbuf_remove(struct strbuf *sb, size_t pos, size_t len){return;}
+
 ssize_t strbuf_read(struct strbuf *sb, int fd, size_t hint){return 0;}
 int strbuf_getline(struct strbuf *sb, FILE *fp){return 0;}
 
