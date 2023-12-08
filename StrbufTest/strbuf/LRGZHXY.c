@@ -213,13 +213,38 @@ void strbuf_remove(struct strbuf *sb, size_t pos, size_t len)
 
 
 
+/*D*/
+//1
+ssize_t strbuf_read(struct strbuf *sb, int fd, size_t hint)
+{
+     size_t oldLen=sb->len;
+     ssize_t new_alloc=hint>0?hint:8192;
+     if((sb->alloc-oldLen)<=0x100)
+     {
+          new_alloc=0x100+1;
+     }
+     sb->buf=(char*)realloc(sb->buf,sb->alloc+new_alloc);
+     if(!sb->buf)
+     {
+          return -1;
+     }
+     ssize_t read_sum=read(fd,sb->buf+oldLen,new_alloc);
+     if(read_sum>0)
+     {
+          sb->len+=read_sum;
+          sb->buf[sb->len+read_sum]='\0';
+     }
+    return read_sum;
+}
+//2
 
 
 
 
 
 
-ssize_t strbuf_read(struct strbuf *sb, int fd, size_t hint){return 0;}
+
+
 int strbuf_getline(struct strbuf *sb, FILE *fp){return 0;}
 
 struct strbuf **strbuf_split_buf(const char *str, size_t len, int terminator, int max){return 0;}
