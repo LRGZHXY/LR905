@@ -217,26 +217,36 @@ void strbuf_remove(struct strbuf *sb, size_t pos, size_t len)
 //1
 ssize_t strbuf_read(struct strbuf *sb, int fd, size_t hint)
 {
-     size_t oldLen=sb->len;
-     ssize_t new_alloc=hint>0?hint:8192;
-     if((sb->alloc-oldLen)<=0x100)
+     FILE*fp=fdopen(fd,"r");
+     char ch;
+     if(fp==NULL||(ch=fgetc(fp))==EOF)
      {
-          new_alloc=0x100+1;
+          return sb->len;
      }
-     sb->buf=(char*)realloc(sb->buf,sb->alloc+new_alloc);
-     if(!sb->buf)
+     size_t newalloc=hint?hint:8192;
+     strbuf_grow(sb,newalloc);
+     sb->buf[sb->len++]=ch;
+     while((ch=fgetc(fp))!=EOF)
      {
-          return -1;
+          sb->buf[sb->len++]=ch;
      }
-     ssize_t read_sum=read(fd,sb->buf+oldLen,new_alloc);
-     if(read_sum>0)
-     {
-          sb->len+=read_sum;
-          sb->buf[sb->len+read_sum]='\0';
-     }
-    return read_sum;
+     sb->buf[sb->len]='\0';
+     return sb->len;
 }
 //2
+int strbuf_getline(struct strbuf *sb, FILE *fp)
+{
+    char ch;
+    while((ch=fgetc(fp))!=EOF)
+    {
+          if(ch=='\n')
+          {
+               break;
+          }
+          strbuf_addch(sb,ch);
+    } 
+    return 0;
+}
 
 
 
@@ -245,7 +255,6 @@ ssize_t strbuf_read(struct strbuf *sb, int fd, size_t hint)
 
 
 
-int strbuf_getline(struct strbuf *sb, FILE *fp){return 0;}
 
 struct strbuf **strbuf_split_buf(const char *str, size_t len, int terminator, int max){return 0;}
 bool strbuf_begin_judge(char *target_str, const char *str, int strnlen){return 0;}
