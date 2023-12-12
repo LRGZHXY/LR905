@@ -256,55 +256,50 @@ int strbuf_getline(struct strbuf *sb, FILE *fp)
 //1
 struct strbuf **strbuf_split_buf(const char *str, size_t len, int terminator, int max) 
  {   
-     int i = 0;
-     struct strbuf **result = (struct strbuf **)malloc((max + 1) * sizeof(struct strbuf *));
-      if (result == NULL) {
-        exit(EXIT_FAILURE);
+     char*cur;
+     char*start=(char*)str;
+     char*ending=(char*)(str+len);
+     int length,count=0;
+     struct strbuf **result=(struct strbuf**)malloc((max+1)*sizeof(struct strbuf *));
+     while(*start==terminator)
+     {
+          start++;
      }
-     char *temp_str = (char *)malloc((len + 1) * sizeof(char));
-     if (temp_str == NULL) {
-        exit(EXIT_FAILURE);
+     for(cur=start;cur<=ending;cur++)
+     {
+          if(*cur==terminator||cur==ending)
+          {
+               length=cur-start;
+               result[count]=(struct strbuf*)malloc(sizeof(struct strbuf));
+               result[count]->len=length;
+               result[count]->alloc=length+1;
+               result[count]->buf=(char*)malloc(result[count]->alloc*sizeof(char));
+               memcpy(result[count]->buf,start,length);
+               *(result[count]->buf+length)='\0';
+               count++;
+               while(*cur==terminator&&cur<=ending)
+               {
+                    cur++;
+               }
+               start=cur;
+          }
+          if(count==max)
+          {
+               break;
+          }
      }
-     strncpy(temp_str, str, len);
-     temp_str[len] = '\0';
-     char *token = strtok(temp_str, (char *)&terminator);
-     while (token != NULL) {
-         result[i] = (struct strbuf *)malloc(sizeof(struct strbuf));
-         if (result[i] == NULL) {
-            exit(EXIT_FAILURE);
-         }
-         result[i]->len = strlen(token);
-         result[i]->alloc = result[i]->len + 1; 
-         result[i]->buf = (char *)malloc(result[i]->alloc * sizeof(char));
-         if (result[i]->buf == NULL) {
-            exit(EXIT_FAILURE);
-         }
-         memcpy(result[i]->buf, token, result[i]->len);
-         result[i]->buf[result[i]->len] = '\0';
-         i++;
-         token = strtok(NULL, (char *)&terminator);
-         if (i == max) {
-            break;
-         }
-     }
-     for (int j = i; j <= max; ++j) {
-        result[j] = NULL;
-     }
-     result[max] = NULL;
-     free(temp_str);
+     result[count]=NULL;
      return result;
-}
-
-
-
-
+ }
 //2
 bool strbuf_begin_judge(char *target_str, const char *str, int strnlen)
 {
+     
      if(str==NULL)
      {
-          return 0;
+          return true;
      }
+
      return strncmp(target_str,str,strlen(str))==0;
 }
 //3
@@ -320,7 +315,6 @@ char *strbuf_get_mid_buf(char *target_buf, int begin, int end, int len)
      result[end-begin]='\0';
      return result;
 }
-
 
 
 
