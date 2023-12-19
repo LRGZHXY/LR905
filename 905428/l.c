@@ -47,3 +47,55 @@ int search(int* nums, int numsSize, int target) {
     }
     return -1;
 }
+
+
+
+int removeElement(int* nums, int numsSize, int val) {
+    int slow=0;
+    for(int fast=0;fast<numsSize;fast++)
+    {
+        if(nums[fast]!=val)
+        {
+            nums[slow]=nums[fast];
+            slow++;
+        }
+    }
+    return slow;
+}
+
+
+
+
+int removeDuplicates(int* nums, int numsSize) {
+    int slow=0;
+    int fast=1;
+    while(fast<numsSize)
+    {
+        if(nums[fast]!=nums[slow])
+        {
+            slow++;
+            nums[slow]=nums[fast];
+        }
+        fast++;
+    }
+    return slow+1;
+}
+
+
+
+
+void moveZeroes(int* nums, int numsSize) {
+    int slow=0;
+    for(int fast=0;fast<numsSize;fast++)
+    {
+        if(nums[fast]!=0)
+        {
+            nums[slow]=nums[fast];
+            slow++;
+        }
+    }
+    for(int i=slow;i<numsSize;i++)
+    {
+        nums[i]=0;
+    }
+}
