@@ -24,7 +24,7 @@ int main()
 
 
 
-//二分查找
+//704.二分查找
 int search(int* nums, int numsSize, int target) {
     int left=0;
     int right=numsSize-1;
@@ -47,9 +47,7 @@ int search(int* nums, int numsSize, int target) {
     }
     return -1;
 }
-
-
-
+//27.移除元素
 int removeElement(int* nums, int numsSize, int val) {
     int slow=0;
     for(int fast=0;fast<numsSize;fast++)
@@ -62,10 +60,7 @@ int removeElement(int* nums, int numsSize, int val) {
     }
     return slow;
 }
-
-
-
-
+//26.删除有序数组中的重复项
 int removeDuplicates(int* nums, int numsSize) {
     int slow=0;
     int fast=1;
@@ -80,10 +75,7 @@ int removeDuplicates(int* nums, int numsSize) {
     }
     return slow+1;
 }
-
-
-
-
+//283.移动零
 void moveZeroes(int* nums, int numsSize) {
     int slow=0;
     for(int fast=0;fast<numsSize;fast++)
