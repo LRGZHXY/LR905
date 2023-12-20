@@ -91,3 +91,23 @@ void moveZeroes(int* nums, int numsSize) {
         nums[i]=0;
     }
 }
+
+
+//字符串连接
+char* strcat(char *a, const char *b) {
+    char *temp = a;
+
+    while (*temp) {
+        temp++;
+    }
+
+    while (*b) {
+        *temp = *b;
+        temp++;
+        b++;
+    }
+
+    *temp = '\0';
+
+    return a;
+}
