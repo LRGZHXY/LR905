@@ -91,8 +91,6 @@ void moveZeroes(int* nums, int numsSize) {
         nums[i]=0;
     }
 }
-
-
 //字符串连接
 char* strcat(char *a, const char *b) {
     char *temp = a;
@@ -110,4 +108,148 @@ char* strcat(char *a, const char *b) {
     *temp = '\0';
 
     return a;
+}
+//结构体定义
+typedef struct ListNodeT{
+    int val;
+    struct ListNodeT next;
+}ListNode;
+//34
+int searchleftBorder(int* nums,int numsSize,int target)
+{
+    int left=0;
+    int right=numsSize-1;
+    int leftBorder=-1;
+    while(left<=right)
+    {
+        int middle=left+(right-left)/2;
+        if(nums[middle]==target)
+        {
+            leftBorder=middle;
+            right=middle-1;
+        }
+        else if(nums[middle]>target)
+        {
+            right=middle-1;
+        }
+        else if(nums[middle]<target)
+        {
+            left=middle+1;
+        }
+    }
+    return leftBorder;
+}
+int searchrightBorder(int* nums,int numsSize,int target)
+{
+    int left=0;
+    int right=numsSize-1;
+    int rightBorder=-1;
+    while(left<=right)
+    {
+        int middle=left+(right-left)/2;
+        if(nums[middle]==target)
+        {
+            rightBorder=middle;
+            left=middle+1;
+        }
+        else if(nums[middle]>target)
+        {
+            right=middle-1;
+        }
+        else if(nums[middle]<target)
+        {
+            left=middle+1;
+        }
+    }
+    return rightBorder;
+}
+int* searchRange(int* nums, int numsSize, int target, int* returnSize) {
+    int rightBorder=searchrightBorder(nums,numsSize,target);
+    int leftBorder=searchleftBorder(nums,numsSize,target);
+    *returnSize=2;
+    int* arr=(int*)malloc(sizeof(int)*2);
+    arr[0]=leftBorder;
+    arr[1]=rightBorder;
+    return arr;
+}
+//844
+#include <stdbool.h>
+bool backspaceCompare(char* s, char* t) {
+    int i=strlen(s)-1,j=strlen(t)-1;
+    int skipS=0,skipT=0;
+    while(i>=0||j>=0)
+    {
+        while(i>=0)
+        {
+            if(s[i]=='#')
+            {
+                skipS++;
+                i--;
+            }
+            else if(skipS>0)
+            {
+                skipS--;
+                i--;
+            }
+            else
+            {
+                break;
+            }
+        }
+        while(j>=0)
+        {
+            if(t[j]=='#')
+            {
+                skipT++;
+                j--;
+            }
+            else if(skipT>0)
+            {
+                skipT--;
+                j--;
+            }
+            else
+            {
+                break;
+            }
+        }
+        if(i>=0&&j>=0)
+        {
+            if(s[i]!=t[j])
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if(i>=0||j>=0)
+            {
+                return false;    
+            }
+        }
+        i--,j--;
+    }
+    return true;
+}
+//977
+int* sortedSquares(int* nums, int numsSize, int* returnSize) {
+    int*arr=(int*)malloc(sizeof(int)*numsSize);
+    for(int i=0;i<numsSize;i++)
+    {
+        arr[i]=nums[i]*nums[i];
+    }
+    for(int j=0;j<numsSize;j++)
+    {
+        for(int k=j+1;k<numsSize;k++)
+        {
+            if(arr[k]<arr[j])
+            {
+                int tmp=arr[k];
+                arr[k]=arr[j];
+                arr[j]=tmp;
+            }
+        }
+    }
+    *returnSize = numsSize; 
+    return arr;
 }

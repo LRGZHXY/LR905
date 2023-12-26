@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/lr/LR905/C Primer Plus/11",
-      "program": "/home/lr/LR905/C Primer Plus/11/build/Debug/outDebug",
+      "cwd": "/home/lr/LR905/905428",
+      "program": "/home/lr/LR905/905428/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

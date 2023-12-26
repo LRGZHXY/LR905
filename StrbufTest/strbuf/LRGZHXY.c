@@ -99,9 +99,8 @@ void strbuf_add(struct strbuf *sb, const void *data, size_t len)
 //3
 void strbuf_addch(struct strbuf *sb, int c)
 {
-     strbuf_grow(sb,1);
-     sb->buf[sb->len]=c;
-     sb->len++;
+     strbuf_grow(sb,2);
+     sb->buf[sb->len++]=c;
      sb->buf[sb->len]='\0';
 }
 //4
@@ -123,13 +122,12 @@ void strbuf_addstr(struct strbuf *sb, const char *s)
 //5
 void strbuf_addbuf(struct strbuf *sb, const struct strbuf *sb2)
 {
-     if(sb->len+sb2->len>sb->alloc)
+     ssize_t newsize=sb->len+sb2->len+1;
+     if(newsize>sb->alloc)
      {
-          strbuf_grow(sb,sb->len+sb2->len);
+          strbuf_grow(sb,newsize);
      }
      strbuf_add(sb,sb2->buf,sb2->len);
-     strbuf_add(sb,"\0",1);
-     sb->len--;
 }
 //6
 void strbuf_setlen(struct strbuf *sb, size_t len)
@@ -256,9 +254,9 @@ int strbuf_getline(struct strbuf *sb, FILE *fp)
 //1
 struct strbuf **strbuf_split_buf(const char *str, size_t len, int terminator, int max) 
  {   
-     char*cur;
-     char*start=(char*)str;
-     char*ending=(char*)(str+len);
+     const char*cur;
+     const char*start=str;
+     const char*ending=str+len;
      int length,count=0;
      struct strbuf **result=(struct strbuf**)malloc((max+1)*sizeof(struct strbuf *));
      while(*start==terminator)
