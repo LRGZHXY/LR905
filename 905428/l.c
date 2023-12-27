@@ -253,3 +253,85 @@ int* sortedSquares(int* nums, int numsSize, int* returnSize) {
     *returnSize = numsSize; 
     return arr;
 }
+//1
+void FGetStr(char *str,int size,FILE *file)
+{
+    int j=0;
+    while(size)
+    {
+        if((str[j++]=fgetc(file))!=-1)
+        {
+            size--;
+        }
+        else
+        {
+            break;
+        }
+        if(str[j-1]=='\n')
+        {
+            break;
+        }
+    }
+    if(str[j-1]=='\n')
+    {
+        str[j-1]='\0';
+    }
+    else if(size==0)
+    {
+        fseek(file,-1,1);
+        str[j-1]='\0';
+    }
+    else
+    {
+        str[j-1]='\0';
+    }
+}
+//2
+void WriteArticle(FILE *f) {
+    if (f == NULL) {
+        return;
+    }
+
+    char ch;
+
+    while ((ch = getchar()) != EOF) {
+        fputc(ch, f);
+    }
+}
+//3
+void ReadArticle(FILE *f) {
+    if (f == NULL) {
+        return;
+    }
+
+    char ch;
+
+    while ((ch = fgetc(f)) != EOF) {
+        putchar(ch);
+    }
+}
+//4
+void BatchAdd(FILE *in, FILE *out) {
+    if (in == NULL || out == NULL) {
+        return;
+    }
+
+    double num1, num2;
+
+    while (fscanf(in, "%lf %lf", &num1, &num2) == 2) {
+        double sum = num1 + num2;
+        fprintf(out, "%.2lf\n", sum);
+    }
+}
+//5
+void fun(FILE *fin, FILE *fout) {
+    if (fin == NULL || fout == NULL) {
+        return;
+    }
+
+    ST student;
+
+    while (fscanf(fin, "%s %s %d %d %lf", student.name, student.id, &student.gender, &student.age, &student.scored) == 5) {
+        output(&student, fout);
+    }
+}
