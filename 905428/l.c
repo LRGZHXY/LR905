@@ -324,14 +324,33 @@ void BatchAdd(FILE *in, FILE *out) {
     }
 }
 //5
-void fun(FILE *fin, FILE *fout) {
-    if (fin == NULL || fout == NULL) {
-        return;
-    }
+// void fun(FILE *fin, FILE *fout) {
+//     if (fin == NULL || fout == NULL) {
+//         return;
+//     }
 
-    ST student;
+//     ST student;
 
-    while (fscanf(fin, "%s %s %d %d %lf", student.name, student.id, &student.gender, &student.age, &student.scored) == 5) {
-        output(&student, fout);
+//     while (fscanf(fin, "%s %s %d %d %lf", student.name, student.id, &student.gender, &student.age, &student.scored) == 5) {
+//         output(&student, fout);
+//     }
+// }
+
+//209
+int minSubArrayLen(int target, int* nums, int numsSize) {
+    int minlength=100000;
+    int sum=0;
+    int left=0;
+    int right=0;
+    for(;right<numsSize;right++)
+    {
+        sum+=nums[right];
+        while(sum>=target)
+        {
+            int MinLength=right-left+1;
+            minlength=minlength<MinLength?minlength:MinLength;
+            sum-=nums[left++];
+        }
     }
+    return minlength==100000?0:minlength;
 }
