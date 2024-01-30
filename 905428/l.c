@@ -544,3 +544,15 @@ int** generateMatrix(int n, int* returnSize, int** returnColumnSizes){
 // ListNode* head = new ListNode();
 // head->val = 5;
   
+// #[derive(PartialEq, Eq, Clone, Debug)]
+// pub struct ListNode<T> {
+//     pub val: T,
+//     pub next: Option<Box<ListNode<T>>>,
+// }
+
+// impl<T> ListNode<T> {
+//     #[inline]
+//     fn new(val: T, node: Option<Box<ListNode<T>>>) -> Self {
+//         ListNode { next: node, val }
+//     }
+// }
