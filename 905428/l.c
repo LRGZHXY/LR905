@@ -556,3 +556,8 @@ int** generateMatrix(int n, int* returnSize, int** returnColumnSizes){
 //         ListNode { next: node, val }
 //     }
 // }
+
+typedef struct ListNodeT {
+    int val;
+    struct ListNodeT next;
+} ListNode;
