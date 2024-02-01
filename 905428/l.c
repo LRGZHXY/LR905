@@ -557,7 +557,15 @@ int** generateMatrix(int n, int* returnSize, int** returnColumnSizes){
 //     }
 // }
 
-typedef struct ListNodeT {
-    int val;
-    struct ListNodeT next;
-} ListNode;
+// typedef struct ListNodeT {
+//     int val;
+//     struct ListNodeT next;
+// } ListNode;
+// har *welcome(){
+//     //请你返回自己的姓名
+//     }
+//     int main(void){
+//     char *a=welcome();
+//     printf("Hi,我相信 %s 可以面试成功!\n",a);
+//     return 0;
+//     }
