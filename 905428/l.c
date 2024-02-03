@@ -578,3 +578,16 @@ int** generateMatrix(int n, int* returnSize, int** returnColumnSizes){
 // //
 // ListNode* head = new ListNode(5);
 // 使用默认构造函数初始化节点：
+ // 删除非头结点
+    //     ListNode* cur = head;
+    //     while (cur != NULL && cur->next!= NULL) {
+    //         if (cur->next->val == val) {
+    //             ListNode* tmp = cur->next;
+    //             cur->next = cur->next->next;
+    //             delete tmp;
+    //         } else {
+    //             cur = cur->next;
+    //         }
+    //     }
+    //     return head;
+    // }
