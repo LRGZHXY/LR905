@@ -591,3 +591,11 @@ int** generateMatrix(int n, int* returnSize, int** returnColumnSizes){
     //     }
     //     return head;
     // }
+    // har *welcome(){
+//     //请你返回自己的姓名
+//     }
+//     int main(void){
+//     char *a=welcome();
+//     printf("Hi,我相信 %s 可以面试成功!\n",a);
+//     return 0;
+//     }
