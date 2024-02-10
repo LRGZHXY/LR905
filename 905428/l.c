@@ -613,59 +613,87 @@ int** generateMatrix(int n, int* returnSize, int** returnColumnSizes){
 //         // 更新offset
 //         offset += 1;
 //     }
-int** generateMatrix(int n, int* returnSize, int** returnColumnSizes){
-    //初始化返回的结果数组的大小
-    *returnSize = n;
-    *returnColumnSizes = (int*)malloc(sizeof(int) * n);
-    //初始化返回结果数组ans
-    int** ans = (int**)malloc(sizeof(int*) * n);
-    int i;
-    for(i = 0; i < n; i++) {
-        ans[i] = (int*)malloc(sizeof(int) * n);
-        (*returnColumnSizes)[i] = n;
-    }
+// int** generateMatrix(int n, int* returnSize, int** returnColumnSizes){
+//     //初始化返回的结果数组的大小
+//     *returnSize = n;
+//     *returnColumnSizes = (int*)malloc(sizeof(int) * n);
+//     //初始化返回结果数组ans
+//     int** ans = (int**)malloc(sizeof(int*) * n);
+//     int i;
+//     for(i = 0; i < n; i++) {
+//         ans[i] = (int*)malloc(sizeof(int) * n);
+//         (*returnColumnSizes)[i] = n;
+//     }
 
-    //设置每次循环的起始位置
-    int startX = 0;
-    int startY = 0;
-    //设置二维数组的中间值，若n为奇数。需要最后在中间填入数字
-    int mid = n / 2;
-    //循环圈数
-    int loop = n / 2;
-    //偏移数
-    int offset = 1;
-    //当前要添加的元素
-    int count = 1;
+//     //设置每次循环的起始位置
+//     int startX = 0;
+//     int startY = 0;
+//     //设置二维数组的中间值，若n为奇数。需要最后在中间填入数字
+//     int mid = n / 2;
+//     //循环圈数
+//     int loop = n / 2;
+//     //偏移数
+//     int offset = 1;
+//     //当前要添加的元素
+//     int count = 1;
 
-    while(loop) {
-        int i = startX;
-        int j = startY;
-        //模拟上侧从左到右
-        for(; j < startY + n - offset; j++) {
-            ans[startX][j] = count++;
-        }
-        //模拟右侧从上到下
-        for(; i < startX + n - offset; i++) {
-            ans[i][j] = count++;
-        }
-        //模拟下侧从右到左
-        for(; j > startY; j--) {
-            ans[i][j] = count++;
-        }
-        //模拟左侧从下到上
-        for(; i > startX; i--) {
-            ans[i][j] = count++;
-        }
-        //偏移值每次加2
-        offset+=2;
-        //遍历起始位置每次+1
-        startX++;
-        startY++;
-        loop--;
-    }
-    //若n为奇数需要单独给矩阵中间赋值
-    if(n%2)
-        ans[mid][mid] = count;
+//     while(loop) {
+//         int i = startX;
+//         int j = startY;
+//         //模拟上侧从左到右
+//         for(; j < startY + n - offset; j++) {
+//             ans[startX][j] = count++;
+//         }
+//         //模拟右侧从上到下
+//         for(; i < startX + n - offset; i++) {
+//             ans[i][j] = count++;
+//         }
+//         //模拟下侧从右到左
+//         for(; j > startY; j--) {
+//             ans[i][j] = count++;
+//         }
+//         //模拟左侧从下到上
+//         for(; i > startX; i--) {
+//             ans[i][j] = count++;
+//         }
+//         //偏移值每次加2
+//         offset+=2;
+//         //遍历起始位置每次+1
+//         startX++;
+//         startY++;
+//         loop--;
+//     }
+//     //若n为奇数需要单独给矩阵中间赋值
+//     if(n%2)
+//         ans[mid][mid] = count;
 
-    return ans;
-}
+//     return ans;
+// }
+// struct ListNode* removeElements(struct ListNode* head, int val){
+//     struct ListNode* temp;
+//     // 当头结点存在并且头结点的值等于val时
+//     while(head && head->val == val) {
+//         temp = head;
+//         // 将新的头结点设置为head->next并删除原来的头结点
+//         head = head->next;
+//         free(temp);
+//     }
+
+//     struct ListNode *cur = head;
+//     // 当cur存在并且cur->next存在时
+//     // 此解法需要判断cur存在因为cur指向head。若head本身为NULL或者原链表中元素都为val的话，cur也会为NULL
+//     while(cur && (temp = cur->next)) {
+//         // 若cur->next的值等于val
+//         if(temp->val == val) {
+//             // 将cur->next设置为cur->next->next并删除cur->next
+//             cur->next = temp->next;
+//             free(temp);
+//         }
+//         // 若cur->next不等于val，则将cur后移一位
+//         else
+//             cur = cur->next;
+//     }
+
+//     // 返回头结点
+//     return head;
+// }
