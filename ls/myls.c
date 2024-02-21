@@ -16,9 +16,7 @@
 #define I 6
 #define s 7
 
-int ls_[10] = {0};
-
-void do_ls(char *dirname);
+void do_ls(int ls_[],char *dirname);
 void ls_l(struct stat info, char *name);
 int lettersort(const void *m, const void *n);
 void addcolor(char *name, struct stat info);
@@ -29,13 +27,13 @@ off_t d_off：目录项在目录流中的偏移量
 unsigned short d_reclen：目录项长度。
 unsigned char d_type：目录项的类型，可能的取值包括 DT_UNKNOWN、DT_FIFO、DT_CHR、DT_DIR、DT_BLK、DT_REG、DT_LNK、DT_SOCK 等，表示不同类型的文件或目录。
 char d_name[]：目录项的名称，以 null 终止的字符串。*/
-void do_ls(char *dirname)
+void do_ls(int ls_[],char *dirname)
 {
     struct stat info;
     struct dirent *ptr;
     char **filename = NULL;
     int count = 0;
-    long filetime[512];
+    long filetime[256];
 
     DIR *dir = opendir(dirname);
     if (dir == NULL)
@@ -47,9 +45,8 @@ void do_ls(char *dirname)
     while ((ptr = readdir(dir)) != NULL)
     {
         // 如果没有-a命令，则跳过隐藏文件  ls-a
-        if (!ls_[a] && ptr->d_name[0] == '.')
-            ;
-        continue;
+        if (!ls_[a] && ptr->d_name[0] == '.');
+          continue;
         filename = realloc(filename, (count + 1) * sizeof(char *));
         filename[count++] = strdup(ptr->d_name);
     }
@@ -100,21 +97,22 @@ void do_ls(char *dirname)
     for (int i = 0; i < count; i++)
     {
         char *path = malloc(strlen(dirname) + strlen(filename[i] + 2));
+        if(path==NULL)
+        {
+            perror("error");
+            exit(EXIT_FAILURE);
+        }
+        sprintf(path, "%s/%s", dirname, filename[i]);
         struct stat *buf = malloc(sizeof(struct stat));
-
-        for (int i = 0; i <= count; i++)
-        {
-            filename[i] = (char *)malloc(sizeof(char *) * 80);
+        if (buf == NULL) {
+            perror("error");
+            exit(EXIT_FAILURE);
         }
-        for (int i = 0; i < count; i++)
+        if (lstat(path, buf) == -1)
         {
-            sprintf(path, "%s/%s", dirname, filename[i]);
-            if (lstat(path, buf) == -1)
-            {
-                perror("error");
-                exit(EXIT_FAILURE);
-            }
-        }
+            perror("error");
+            exit(EXIT_FAILURE);
+        }  
 
         // 显示总用量  ls-s
         if (ls_[s] || ls_[l])
@@ -142,17 +140,14 @@ void do_ls(char *dirname)
         {
             if (S_ISDIR(info.st_mode))
             {
-                for (int i = 0; i < count; i++)
+                if (strcmp(filename[i], ".") == 0 || strcmp(filename[i], "..") == 0)
                 {
-                    if (strcmp(filename[i], ".") == 0 || strcmp(filename[i], "..") == 0)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        printf("\n%s:\n", path);
-                        do_ls(path);
-                    }
+                    return;
+                }
+                else
+                {
+                    printf("\n%s:\n", path);
+                    do_ls(ls_,path);
                 }
             }
         }
@@ -176,7 +171,7 @@ void do_ls(char *dirname)
  st_ctime：表示文件的状态发生变化的时间。*/
 void ls_l(struct stat info, char *name)
 {
-    char permissions[10] = {0};
+    char permissions[11] = {0};
     // 文件类型
     if (S_ISREG(info.st_mode)) // 普通文件
         permissions[0] = '-';
@@ -228,7 +223,7 @@ void ls_l(struct stat info, char *name)
     printf("%-10ld ", info.st_size);
 
     // 时间
-    char modtime[25];
+    char modtime[30];
     strcpy(modtime, ctime(&info.st_mtime));
     modtime[strlen(modtime) - 1] = '\0';
     printf("%s ", modtime);
@@ -289,7 +284,8 @@ int lettersort(const void *m, const void *n)
 
 int main(int argc, char *argv[])
 {
-    int count = 0;
+    int ls_[8] = {0};
+    int cnt = 0;
     for (int i = 1; i < argc; i++)
     {
         if (argv[i][0] == '-')
@@ -297,28 +293,29 @@ int main(int argc, char *argv[])
             int j = 1;
             do
             {
+                cnt++;
                 switch (argv[i][j])
                 {
                 case 'a':
-                    ls_[a]++;
+                    ls_[a]=1;
                     break;
                 case 'l':
-                    ls_[l]++;
+                    ls_[l]=1;
                     break;
                 case 'R':
-                    ls_[R]++;
+                    ls_[R]=1;
                     break;
                 case 't':
-                    ls_[t]++;
+                    ls_[t]=1;
                     break;
                 case 'r':
-                    ls_[r]++;
+                    ls_[r]=1;
                     break;
                 case 'I':
-                    ls_[I]++;
+                    ls_[I]=1;
                     break;
                 case 's':
-                    ls_[s]++;
+                    ls_[s]=1;
                     break;
                 default:
                     printf("命令错误");
@@ -326,13 +323,12 @@ int main(int argc, char *argv[])
                 }
                 j++;
             } while (j < strlen(argv[i]));
-            count++;
         }
     }
     // 只有参数选项(以 '-' 开头的参数),默认使用当前目录作为操作目标
-    if (count + 1 == argc)
+    if (cnt + 1 == argc)
     {
-        do_ls(".");
+        do_ls(ls_,".");
     }
     // 对命令行中出现的目录进行相应操作
     else
@@ -341,7 +337,8 @@ int main(int argc, char *argv[])
         {
             if (argv[i][0] != '-')
             {
-                do_ls(argv[i]);
+                printf("%s:\n", argv[i]);
+                do_ls(ls_,argv[i]);
             }
         }
     }
