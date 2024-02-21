@@ -109,11 +109,6 @@ char* strcat(char *a, const char *b) {
 
     return a;
 }
-//结构体定义
-typedef struct ListNodeT{
-    int val;
-    struct ListNodeT next;
-}ListNode;
 //34
 int searchleftBorder(int* nums,int numsSize,int target)
 {
@@ -412,420 +407,49 @@ int** generateMatrix(int n, int* returnSize, int** returnColumnSizes){
     return ans;
 }
 
+// strncpy(filename[i],dirname,strlen(dirname));
+//         strcat(filename[i],"/");
+//         strcat(filename[i],ptr->d_name);
 
-// class Solution {
-// public:
-//     vector<vector<int>> generateMatrix(int n) {
-//         vector<vector<int>> res(n, vector<int>(n, 0)); // 使用vector定义一个二维数组
-//         int startx = 0, starty = 0; // 定义每循环一个圈的起始位置
-//         int loop = n / 2; // 每个圈循环几次，例如n为奇数3，那么loop = 1 只是循环一圈，矩阵中间的值需要单独处理
-//         int mid = n / 2; // 矩阵中间的位置，例如：n为3， 中间的位置就是(1，1)，n为5，中间位置为(2, 2)
-//         int count = 1; // 用来给矩阵中每一个空格赋值
-//         int offset = 1; // 需要控制每一条边遍历的长度，每次循环右边界收缩一位
-//         int i,j;
-//         while (loop --) {
-//             i = startx;
-//             j = starty;
+//char**filename=(char**)malloc((count+1)*sizeof(char*));
 
-//             // 下面开始的四个for就是模拟转了一圈
-//             // 模拟填充上行从左到右(左闭右开)
-//             for (j = starty; j < n - offset; j++) {
-//                 res[startx][j] = count++;
+// //按首字母A-Z排序
+//     qsort(filename,count,sizeof(char*),lettersort);
+    
+//     //若按修改时间排序  ls-t
+//     if(ls_[t])
+//     {
+//         struct stat info;
+//         for(int i=0;i<count;i++)
+//         {
+//             if(lstat(filename[i],&info)==-1)
+//             {
+//                 perror("lstat error");
 //             }
-//             // 模拟填充右列从上到下(左闭右开)
-//             for (i = startx; i < n - offset; i++) {
-//                 res[i][j] = count++;
+//             filename[i]=info.st_mtime;
+//         }
+//         for(int i=0;i<count;i++)
+//         {
+//             for(int j=i;j<count;j++)
+//             {
+//                 if(filename[i]<filename[j])
+//                 {
+//                     long int temp=filename[i];
+//                     filename[i]=filename[j];
+//                     filename[j]=temp;
+//                 }
 //             }
-//             // 模拟填充下行从右到左(左闭右开)
-//             for (; j > starty; j--) {
-//                 res[i][j] = count++;
-//             }
-//             // 模拟填充左列从下到上(左闭右开)
-//             for (; i > startx; i--) {
-//                 res[i][j] = count++;
-//             }
-
-//             // 第二圈开始的时候，起始位置要各自加1， 例如：第一圈起始位置是(0, 0)，第二圈起始位置是(1, 1)
-//             startx++;
-//             starty++;
-
-//             // offset 控制每一圈里每一条边遍历的长度
-//             offset += 1;
-//         }
-
-//         // 如果n为奇数的话，需要单独给矩阵最中间的位置赋值
-//         if (n % 2) {
-//             res[mid][mid] = count;
-//         }
-//         return res;
-//     }
-// };
-
-
-// class Solution:
-//     def generateMatrix(self, n: int) -> List[List[int]]:
-//         nums = [[0] * n for _ in range(n)]
-//         startx, starty = 0, 0               # 起始点
-//         loop, mid = n // 2, n // 2          # 迭代次数、n为奇数时，矩阵的中心点
-//         count = 1                           # 计数
-
-//         for offset in range(1, loop + 1) :      # 每循环一层偏移量加1，偏移量从1开始
-//             for i in range(starty, n - offset) :    # 从左至右，左闭右开
-//                 nums[startx][i] = count
-//                 count += 1
-//             for i in range(startx, n - offset) :    # 从上至下
-//                 nums[i][n - offset] = count
-//                 count += 1
-//             for i in range(n - offset, starty, -1) : # 从右至左
-//                 nums[n - offset][i] = count
-//                 count += 1
-//             for i in range(n - offset, startx, -1) : # 从下至上
-//                 nums[i][starty] = count
-//                 count += 1                
-//             startx += 1         # 更新起始点
-//             starty += 1
-
-//         if n % 2 != 0 :			# n为奇数时，填充中心点
-//             nums[mid][mid] = count 
-//         return nums
-
-
-// var generateMatrix = function(n) {
-//     let startX = startY = 0;   // 起始位置
-//     let loop = Math.floor(n/2);   // 旋转圈数
-//     let mid = Math.floor(n/2);    // 中间位置
-//     let offset = 1;    // 控制每一层填充元素个数
-//     let count = 1;     // 更新填充数字
-//     let res = new Array(n).fill(0).map(() => new Array(n).fill(0));
-
-//     while (loop--) {
-//         let row = startX, col = startY;
-//         // 上行从左到右（左闭右开）
-//         for (; col < n - offset; col++) {
-//             res[row][col] = count++;
-//         }
-//         // 右列从上到下（左闭右开）
-//         for (; row < n - offset; row++) {
-//             res[row][col] = count++;
-//         }
-//         // 下行从右到左（左闭右开）
-//         for (; col > startY; col--) {
-//             res[row][col] = count++;
-//         }
-//         // 左列做下到上（左闭右开）
-//         for (; row > startX; row--) {
-//             res[row][col] = count++;
-//         }
-
-//         // 更新起始位置
-//         startX++;
-//         startY++;
-
-//         // 更新offset
-//         offset += 1;
-//     }
-//     // 如果n为奇数的话，需要单独给矩阵最中间的位置赋值
-//     if (n % 2 === 1) {
-//         res[mid][mid] = count;
-//     }
-//     return res;
-// };
-
-// 单链表
-// struct ListNode {
-//     int val;  // 节点上存储的元素
-//     ListNode *next;  // 指向下一个节点的指针
-//     ListNode(int x) : val(x), next(NULL) {}  // 节点的构造函数
-// };
-// //
-// ListNode* head = new ListNode(5);
-// 使用默认构造函数初始化节点：
-
-// ListNode* head = new ListNode();
-// head->val = 5;
-  
-// #[derive(PartialEq, Eq, Clone, Debug)]
-// pub struct ListNode<T> {
-//     pub val: T,
-//     pub next: Option<Box<ListNode<T>>>,
-// }
-
-// impl<T> ListNode<T> {
-//     #[inline]
-//     fn new(val: T, node: Option<Box<ListNode<T>>>) -> Self {
-//         ListNode { next: node, val }
-//     }
-// }
-
-// typedef struct ListNodeT {
-//     int val;
-//     struct ListNodeT next;
-// } ListNode;
-// har *welcome(){
-//     //请你返回自己的姓名
-//     }
-//     int main(void){
-//     char *a=welcome();
-//     printf("Hi,我相信 %s 可以面试成功!\n",a);
-//     return 0;
-//     }
-// 单链表
-// struct ListNode {
-//     int val;  // 节点上存储的元素
-//     ListNode *next;  // 指向下一个节点的指针
-//     ListNode(int x) : val(x), next(NULL) {}  // 节点的构造函数
-// };
-// //
-// ListNode* head = new ListNode(5);
-// 使用默认构造函数初始化节点：
- // 删除非头结点
-    //     ListNode* cur = head;
-    //     while (cur != NULL && cur->next!= NULL) {
-    //         if (cur->next->val == val) {
-    //             ListNode* tmp = cur->next;
-    //             cur->next = cur->next->next;
-    //             delete tmp;
-    //         } else {
-    //             cur = cur->next;
-    //         }
-    //     }
-    //     return head;
-    // }
-    // har *welcome(){
-//     //请你返回自己的姓名
-//     }
-//     int main(void){
-//     char *a=welcome();
-//     printf("Hi,我相信 %s 可以面试成功!\n",a);
-//     return 0;
-//     }
-
-// typedef struct ListNodeT {
-//     int val;
-//     struct ListNodeT next;
-// } ListNode;
-// har *welcome(){
-
-//         // 更新起始位置
-//         startX++;
-//         startY++;
-
-//         // 更新offset
-//         offset += 1;
-//     }
-// int** generateMatrix(int n, int* returnSize, int** returnColumnSizes){
-//     //初始化返回的结果数组的大小
-//     *returnSize = n;
-//     *returnColumnSizes = (int*)malloc(sizeof(int) * n);
-//     //初始化返回结果数组ans
-//     int** ans = (int**)malloc(sizeof(int*) * n);
-//     int i;
-//     for(i = 0; i < n; i++) {
-//         ans[i] = (int*)malloc(sizeof(int) * n);
-//         (*returnColumnSizes)[i] = n;
-//     }
-
-//     //设置每次循环的起始位置
-//     int startX = 0;
-//     int startY = 0;
-//     //设置二维数组的中间值，若n为奇数。需要最后在中间填入数字
-//     int mid = n / 2;
-//     //循环圈数
-//     int loop = n / 2;
-//     //偏移数
-//     int offset = 1;
-//     //当前要添加的元素
-//     int count = 1;
-
-//     while(loop) {
-//         int i = startX;
-//         int j = startY;
-//         //模拟上侧从左到右
-//         for(; j < startY + n - offset; j++) {
-//             ans[startX][j] = count++;
-//         }
-//         //模拟右侧从上到下
-//         for(; i < startX + n - offset; i++) {
-//             ans[i][j] = count++;
-//         }
-//         //模拟下侧从右到左
-//         for(; j > startY; j--) {
-//             ans[i][j] = count++;
-//         }
-//         //模拟左侧从下到上
-//         for(; i > startX; i--) {
-//             ans[i][j] = count++;
-//         }
-//         //偏移值每次加2
-//         offset+=2;
-//         //遍历起始位置每次+1
-//         startX++;
-//         startY++;
-//         loop--;
-//     }
-//     //若n为奇数需要单独给矩阵中间赋值
-//     if(n%2)
-//         ans[mid][mid] = count;
-
-//     return ans;
-// }
-// struct ListNode* removeElements(struct ListNode* head, int val){
-//     struct ListNode* temp;
-//     // 当头结点存在并且头结点的值等于val时
-//     while(head && head->val == val) {
-//         temp = head;
-//         // 将新的头结点设置为head->next并删除原来的头结点
-//         head = head->next;
-//         free(temp);
-//     }
-
-//     struct ListNode *cur = head;
-//     // 当cur存在并且cur->next存在时
-//     // 此解法需要判断cur存在因为cur指向head。若head本身为NULL或者原链表中元素都为val的话，cur也会为NULL
-//     while(cur && (temp = cur->next)) {
-//         // 若cur->next的值等于val
-//         if(temp->val == val) {
-//             // 将cur->next设置为cur->next->next并删除cur->next
-//             cur->next = temp->next;
-//             free(temp);
-//         }
-//         // 若cur->next不等于val，则将cur后移一位
-//         else
-//             cur = cur->next;
-//     }
-
-//     // 返回头结点
-//     return head;
-// }
-// typedef struct {
-//     int val;
-//     struct MyLinkedList* next;
-// } MyLinkedList;
-
-
-// MyLinkedList* myLinkedListCreate() {
-//     MyLinkedList* head = (MyLinkedList *)malloc(sizeof (MyLinkedList));
-//     head->next = NULL;
-//     return head;
-// }
-
-// int myLinkedListGet(MyLinkedList* obj, int index) {
-//      MyLinkedList *cur = obj->next;
-//     for (int i = 0; cur != NULL; i++){
-//         if (i == index){
-//             return cur->val;
-//         }
-//         else{
-//             cur = cur->next;
 //         }
 //     }
-//     return -1;
-// }
 
-// void myLinkedListAddAtHead(MyLinkedList* obj, int val) {
-//     MyLinkedList *nhead = (MyLinkedList *)malloc(sizeof (MyLinkedList));
-//     nhead->val = val;
-//     nhead->next = obj->next;
-//     obj->next = nhead;
-
-// }
-
-// void myLinkedListAddAtTail(MyLinkedList* obj, int val) {
-//     MyLinkedList *cur = obj;
-//     while(cur->next != NULL){
-//         cur = cur->next;
-//         }
-//     MyLinkedList *ntail = (MyLinkedList *)malloc(sizeof (MyLinkedList));
-//     ntail->val = val;
-//     ntail->next = NULL;
-//     cur->next = ntail;
-// }
-
-// void myLinkedListAddAtIndex(MyLinkedList* obj, int index, int val) {
-//     if (index == 0){
-//         myLinkedListAddAtHead(obj, val);
-//         return;
-//     }
-//     MyLinkedList *cur = obj->next;
-//     for (int i = 1 ;cur != NULL; i++){
-//         if (i == index){
-//             MyLinkedList* newnode = (MyLinkedList *)malloc(sizeof (MyLinkedList));
-//             newnode->val = val;
-//             newnode->next = cur->next;
-//             cur->next = newnode;
-//             return;
-//         }
-//         else{
-//             cur = cur->next;
+//     //若按Z-A排序  ls-r
+//     if(ls_[r])
+//     {
+//         for(int i=0;i<count/2;i++)
+//         {
+//             char*temp;
+//             temp=filename[i];
+//             filename[i]=filename[count-i-1];
+//             filename[count-i-1]=temp;
 //         }
 //     }
-// }
-
-// void myLinkedListDeleteAtIndex(MyLinkedList* obj, int index) {
-//     if (index == 0){
-//         MyLinkedList *tmp = obj->next;
-//         if (tmp != NULL){
-//             obj->next = tmp->next;
-//             free(tmp);     
-//         }
-//         return;
-//     }
-//     MyLinkedList *cur = obj->next;
-//     for (int i = 1 ;cur != NULL && cur->next != NULL; i++){
-//         if (i == index){
-//             MyLinkedList *tmp = cur->next;
-//             if (tmp != NULL) {
-//                 cur->next = tmp->next;
-//                 free(tmp);
-//             }
-//             return;
-//         }
-//         else{
-//             cur = cur->next;
-//         }
-//     }
-// }
-
-// void myLinkedListFree(MyLinkedList* obj) {
-//     while(obj != NULL){
-//         MyLinkedList *tmp = obj;
-//         obj = obj->next;
-//         free(tmp);
-//     }
-// }struct ListNode* reverseList(struct ListNode* head) {
-//     struct ListNode* temp;
-//     struct ListNode* pre = NULL;
-//     while(head) {
-//         temp = head->next;
-//         head->next = pre;
-//         pre = head;
-//         head = temp;
-//     }
-//     return pre;
-// }
-// struct ListNode* swapPairs(struct ListNode* head) {
-//     if(!head || !head->next)
-//         return head;
-//     struct ListNode *newHead = head->next;
-//     head->next = swapPairs(newHead->next);
-//     newHead->next = head;
-//     return newHead;
-// }
-// #include <stdio.h>
-// void one_three(void)
-// {
-//     printf("one\n");
-//     two();
-//     printf("three\n");
-// }
-// void two()
-// {
-//     printf("two\n");
-// }
-// int main()
-// {
-//     printf("starting now:\n");
-//     one_three();
-//     printf("done!");
-//     return 0;
-// }
