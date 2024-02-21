@@ -1,11 +1,12 @@
 #include <stdio.h>
-#include <stdlib.h> //EXIT_FAILURE
+#include <stdlib.h> //EXIT_FAILURE  qsort
 #include <string.h> //strlen  strdup
 #include <sys/stat.h> //struct stat
 #include <pwd.h> //struct passwd
 #include <grp.h> //struct group
 #include <time.h> //ctime
 #include <dirent.h> //DIR
+#include <linux/limits.h> //PATH_MAX
 
 #define a 1
 #define l 2
@@ -19,11 +20,20 @@ int ls_[10]={0};
 
 void do_ls (char*dirname);
 void ls_l(struct stat info,char* name);
+int lettersort(const void *m,const void *n);
+void addcolor(char*name,struct stat info);
 
+/*struct dirent结构体成员:
+ino_t d_ino：目录项的 inode 号
+off_t d_off：目录项在目录流中的偏移量
+unsigned short d_reclen：目录项长度。
+unsigned char d_type：目录项的类型，可能的取值包括 DT_UNKNOWN、DT_FIFO、DT_CHR、DT_DIR、DT_BLK、DT_REG、DT_LNK、DT_SOCK 等，表示不同类型的文件或目录。
+char d_name[]：目录项的名称，以 null 终止的字符串。*/
 void do_ls(char*dirname)
 {
+    struct stat info;
     struct dirent *ptr;
-    char**dirname=NULL;
+    char**filename=NULL;
     int count=0;
 
     DIR *dir=opendir(dirname);
@@ -35,42 +45,122 @@ void do_ls(char*dirname)
     //保存目录中的文件名
     while(ptr=readdir(dir)!=NULL)
     {
-        //如果没有-a命令，则跳过隐藏文件
+        //如果没有-a命令，则跳过隐藏文件  ls-a
         if(!ls_[a]&&ptr->d_name[0]=='.');
             continue;
-        dirname=realloc(dirname,(count+1)*sizeof(char*));
-        dirname[count++]=strdup(ptr->d_name);
+        filename=realloc(filename,(count+1)*sizeof(char*));
+        filename[count++]=strdup(ptr->d_name);
     }
     closedir(dir);
 
+    //按首字母A-Z排序
+    qsort(filename,count,sizeof(char*),lettersort);
+    
+    //若按修改时间排序  ls-t
+    if(ls_[t])
+    {
+        struct stat info;
+        for(int i=0;i<count;i++)
+        {
+            if(lstat(filename[i],&info)==-1)
+            {
+                perror("lstat error");
+            }
+            filename[i]=info.st_mtime;
+        }
+        for(int i=0;i<count;i++)
+        {
+            for(int j=i;j<count;j++)
+            {
+                if(filename[i]<filename[j])
+                {
+                    long int temp=filename[i];
+                    filename[i]=filename[j];
+                    filename[j]=temp;
+                }
+            }
+        }
+    }
+
+    //若按Z-A排序  ls-r
+    if(ls_[r])
+    {
+        for(int i=0;i<count/2;i++)
+        {
+            char*temp;
+            temp=filename[i];
+            filename[i]=filename[count-i-1];
+            filename[count-i-1]=temp;
+        }
+    }
+
     //构建文件的完整路径
-    char**filename=(char**)malloc((count+1)*sizeof(char*));
+    for(int i=0;i<count;i++){
+    char*path=malloc(strlen(dirname)+strlen(filename[i]+2));
     struct stat*buf=malloc(sizeof(struct stat));
 
     for(int i=0;i<=count;i++)
     {
-        char*filename=(char*)malloc(sizeof(char*)*80);
+        filename[i]=(char*)malloc(sizeof(char*)*80);
     }
     for(int i=0;i<count;i++)
     {
-        strncpy(filename[i],dirname,strlen(dirname));
-        strcat(filename[i],"/");
-        strcat(filename[i],ptr->d_name);
-        if(lstat(filename[i],buf)==-1)
+        sprintf(path,"%s/%s",dirname,filename[i]);
+        if(lstat(path,buf)==-1)
         {
             perror("error");
             exit(EXIT_FAILURE);
         }
     }
 
-    //显示总用量
+    //显示总用量  ls-s
     if(ls_[s]||ls_[l])
     {
-        
+        printf("总用量:%-10ld ",(long)((buf->st_blocks)/2));
+        addcolor(dirname,info);
     }
+
+    //显示节点号  ls-i
+    if(ls_[I])
+    {
+        printf("%ld ",info.st_ino);
+        addcolor(dirname,info);
+    }
+
+    //ls-l
+    if(ls_[l])
+    {
+        char name[PATH_MAX];
+        ls_l(info,name);
+    }
+
+    //ls-R
+    if(ls_[R])
+    {
+        if(S_ISDIR(info.st_mode))
+        {
+            for(int i=0;i<count;i++)
+            {
+                if(strcmp(filename[i],".")==0||strcmp(filename[i],"..")==0)
+                {
+                    return;
+                }
+                else
+                {
+                    printf("\n%s:\n",path);
+                    do_ls(path);
+                }
+            }
+        }
+    }
+
+    free(buf);
+    free(path);
+    free(filename);
+  }
 }
 
-/*struct stat 结构成员:
+/*struct stat 结构体成员:
  st_mode：表示文件的类型和访问权限。
  st_ino：表示文件的索引节点号。
  st_dev：表示文件所在的设备的标识号。
@@ -141,9 +231,47 @@ void ls_l(struct stat info,char* name)
     printf("%s ",modtime);
 
     //文件名
-    printf(" %s",name);
+    addcolor(name,info);
 
     printf("\n");
+}
+
+void addcolor(char*name,struct stat info)
+{
+   if(S_ISDIR(info.st_mode)){//目录 蓝色
+        printf("\033[01;34m%s\033[0m\n",name);
+   }
+   else if(S_ISLNK(info.st_mode)){//符号链接 青色
+        printf("\033[01;36m%s\033[0m\n",name);
+   }
+   else if(S_ISCHR(info.st_mode)){//字符设备文件 黄色
+        printf("\033[01;33m%s\033[0m\n",name);
+   }
+   else if(S_ISBLK(info.st_mode)){//块设备文件 黑色
+        printf("\033[01;30m%s\033[0m\n",name);
+   }
+   else if(S_ISSOCK(info.st_mode)){//套接字文件 洋红色
+        printf("\033[01;35m%s\033[0m\n",name);
+   }
+   else if(S_ISFIFO(info.st_mode)){//FIFO文件（命名管道）橙色
+        printf("\033[01;31m%s\033[0m\n",name);
+   }
+   else if(S_ISREG(info.st_mode)){//可执行文件 绿色
+        if(info.st_mode&S_IXUSR||info.st_mode&S_IXGRP||info.st_mode&S_IXOTH){
+            printf("\033[01;32m%s\033[0m\n",name);
+        }
+        else{
+            printf("%-20s ",name);
+        }
+   }
+   else{
+     printf("%-20s ",name);
+   }
+}
+
+int lettersort(const void *m,const void *n)
+{
+    return strcmp(*(const char**)m,*(const char**)n);
 }
 
 int main(int argc,char*argv[])
@@ -205,3 +333,5 @@ int main(int argc,char*argv[])
     }
     return 0;
 }
+
+
