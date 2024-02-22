@@ -29,7 +29,6 @@ unsigned char d_type：目录项的类型，可能的取值包括 DT_UNKNOWN、D
 char d_name[]：目录项的名称，以 null 终止的字符串。*/
 void do_ls(char *dirname, int ls_[])
 {
-    struct stat info;
     struct dirent *ptr;
     int count = 0;
     long filetime[256];
@@ -212,6 +211,16 @@ int lettersort(const void *m, const void *n)
     return strcmp(*(const char **)m, *(const char **)n);
 }
 
+/*struct stat 结构体成员:
+ st_mode：表示文件的类型和访问权限。
+ st_ino：表示文件的索引节点号。
+ st_dev：表示文件所在的设备的标识号。
+ st_nlink：文件的硬链接数。
+ st_uid：表示文件所有者的用户 ID。
+ st_gid：表示文件所属组的组 ID。
+ st_size：表示文件的大小（以字节为单位）。
+ st_atime：表示文件的最后访问时间。
+ st_mtime：表示文件的最后修改时间。*/
 void ls_l(char *name, struct stat *buf)
 {
     char permissions[11] = {0};
