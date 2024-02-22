@@ -17,7 +17,7 @@
 #define s 7
 
 void do_ls(char *dirname, int ls_[]);
-void ls_l( struct stat *buf);
+void ls_l(struct stat *buf);
 int lettersort(const void *m, const void *n);
 void addcolor(char *name, struct stat *buf);
 
@@ -50,10 +50,9 @@ void do_ls(char *dirname, int ls_[])
         filename = realloc(filename, (count + 1) * sizeof(char *));
         filename[count++] = strdup(ptr->d_name);
     }
-    
 
     // 按首字母A-Z排序
-    //qsort(filename, count, sizeof(char *), lettersort);
+    qsort(filename, count, sizeof(char *), lettersort);
 
     // 若按修改时间排序  ls-t
     if (ls_[t])
@@ -80,8 +79,6 @@ void do_ls(char *dirname, int ls_[])
             }
         }
     }
-    else
-        qsort(filename, count, sizeof(char *), lettersort);
 
     // 若按Z-A排序  ls-r
     if (ls_[r])
@@ -151,7 +148,7 @@ void do_ls(char *dirname, int ls_[])
         {
             if (S_ISDIR(buf->st_mode))
             {
-                if (strcmp(filename[i], ".")!=0 && strcmp(filename[i], "..")!=0)
+                if (strcmp(filename[i], ".") != 0 && strcmp(filename[i], "..") != 0)
                 {
                     printf("\n%s:\n", path);
                     do_ls(path, ls_);
@@ -278,6 +275,7 @@ void ls_l(struct stat *buf)
     // 时间
     char modtime[30];
     strftime(modtime, sizeof(modtime), "%b %d %H:%M", localtime(&buf->st_mtime));
+    //"%b"代表月份的缩写，"%d"代表月中的第几天，"%H"代表小时（24小时制），"%M"代表分钟
     printf(" %s  ", modtime);
 }
 /*struct stat 结构体成员:
