@@ -17,7 +17,7 @@
 #define s 7
 
 void do_ls(char *dirname, int ls_[]);
-void ls_l(char *name, struct stat *buf);
+void ls_l( struct stat *buf);
 int lettersort(const void *m, const void *n);
 void addcolor(char *name, struct stat *buf);
 
@@ -29,6 +29,7 @@ unsigned char d_type：目录项的类型，可能的取值包括 DT_UNKNOWN、D
 char d_name[]：目录项的名称，以 null 终止的字符串。*/
 void do_ls(char *dirname, int ls_[])
 {
+    struct stat info;
     struct dirent *ptr;
     int count = 0;
     long filetime[256];
@@ -47,12 +48,12 @@ void do_ls(char *dirname, int ls_[])
         if (!ls_[a] && ptr->d_name[0] == '.')
             continue;
         filename = realloc(filename, (count + 1) * sizeof(char *));
-        filename[count] = strdup(ptr->d_name);
-        count++;
+        filename[count++] = strdup(ptr->d_name);
     }
-    closedir(dir);
+    
+
     // 按首字母A-Z排序
-    qsort(filename, count, sizeof(char *), lettersort);
+    //qsort(filename, count, sizeof(char *), lettersort);
 
     // 若按修改时间排序  ls-t
     if (ls_[t])
@@ -79,6 +80,8 @@ void do_ls(char *dirname, int ls_[])
             }
         }
     }
+    else
+        qsort(filename, count, sizeof(char *), lettersort);
 
     // 若按Z-A排序  ls-r
     if (ls_[r])
@@ -129,18 +132,18 @@ void do_ls(char *dirname, int ls_[])
             exit(EXIT_FAILURE);
         }
 
-        // ls-l
+        if (ls_[I])
+        {
+            printf(" %-8lu ", buf->st_ino);
+        }
+        if (ls_[s])
+        {
+            printf("%-8ld ", (long)buf->st_size);
+        }
         if (ls_[l])
         {
-            ls_l(filename[i], buf);
+            ls_l(buf);
         }
-
-        // 显示节点号  ls-i
-        if (ls_[i])
-        {
-            printf(" %ld ", (long)buf->st_ino);
-        }
-
         addcolor(filename[i], buf);
         printf("\n");
 
@@ -148,11 +151,11 @@ void do_ls(char *dirname, int ls_[])
         {
             if (S_ISDIR(buf->st_mode))
             {
-                if (!strcmp(filename[i], ".") || !strcmp(filename[i], ".."))
-                    continue;
-                
-                printf("\n%s:\n", path);
-                do_ls(path,ls_);
+                if (strcmp(filename[i], ".")!=0 && strcmp(filename[i], "..")!=0)
+                {
+                    printf("\n%s:\n", path);
+                    do_ls(path, ls_);
+                }
             }
         }
 
@@ -161,6 +164,7 @@ void do_ls(char *dirname, int ls_[])
         free(filename[i]);
     }
     free(filename);
+    closedir(dir);
 }
 
 void addcolor(char *name, struct stat *buf)
@@ -211,17 +215,7 @@ int lettersort(const void *m, const void *n)
     return strcmp(*(const char **)m, *(const char **)n);
 }
 
-/*struct stat 结构体成员:
- st_mode：表示文件的类型和访问权限。
- st_ino：表示文件的索引节点号。
- st_dev：表示文件所在的设备的标识号。
- st_nlink：文件的硬链接数。
- st_uid：表示文件所有者的用户 ID。
- st_gid：表示文件所属组的组 ID。
- st_size：表示文件的大小（以字节为单位）。
- st_atime：表示文件的最后访问时间。
- st_mtime：表示文件的最后修改时间。*/
-void ls_l(char *name, struct stat *buf)
+void ls_l(struct stat *buf)
 {
     char permissions[11] = {0};
     // 文件类型
@@ -284,9 +278,18 @@ void ls_l(char *name, struct stat *buf)
     // 时间
     char modtime[30];
     strftime(modtime, sizeof(modtime), "%b %d %H:%M", localtime(&buf->st_mtime));
-    printf(" %s ", modtime);
+    printf(" %s  ", modtime);
 }
-
+/*struct stat 结构体成员:
+ st_mode：表示文件的类型和访问权限。
+ st_ino：表示文件的索引节点号。
+ st_dev：表示文件所在的设备的标识号。
+ st_nlink：文件的硬链接数。
+ st_uid：表示文件所有者的用户 ID。
+ st_gid：表示文件所属组的组 ID。
+ st_size：表示文件的大小（以字节为单位）。
+ st_atime：表示文件的最后访问时间。
+ st_mtime：表示文件的最后修改时间。*/
 int main(int argc, char *argv[])
 {
     int ls_[8] = {0};
@@ -314,7 +317,7 @@ int main(int argc, char *argv[])
                     ls_[r] = 1;
                     break;
                 case 'i':
-                    ls_[i] = 1;
+                    ls_[I] = 1;
                     break;
                 case 's':
                     ls_[s] = 1;
