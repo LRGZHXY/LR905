@@ -91,7 +91,7 @@ void do_ls(char *dirname, int ls_[])
     for (int i = 0; i < count; i++)
     {
         struct stat *buf = malloc(sizeof(struct stat));
-        char *path = malloc(strlen(dirname) + strlen(filename[i])+2);
+        char *path = malloc(strlen(dirname) + strlen(filename[i]) + 2);
         if (path == NULL)
         {
             perror("error");
@@ -116,8 +116,8 @@ void do_ls(char *dirname, int ls_[])
         }
         if (ls_[s])
         {
-            printf("%-10ld ", (long)((buf->st_blocks)/2));
-            //st_blocks 的值通常是以512字节块为单位的整数值，将其除以2可以得到以1024字节块为单位的结果
+            printf("%-10ld ", (long)((buf->st_blocks) / 2));
+            // st_blocks 的值通常是以512字节块为单位的整数值，将其除以2可以得到以1024字节块为单位的结果
         }
         if (ls_[l])
         {
@@ -132,8 +132,16 @@ void do_ls(char *dirname, int ls_[])
             {
                 if (strcmp(filename[i], ".") != 0 && strcmp(filename[i], "..") != 0)
                 {
-                    printf("\n%s:\n", path);
-                    do_ls(path, ls_);
+                    char *tempptr = malloc(strlen(path) + 1);
+                    if (tempptr == NULL)
+                    {
+                        perror("error");
+                        exit(EXIT_FAILURE);
+                    }
+                    strcpy(tempptr, path);
+                    printf("\n%s:\n", tempptr);
+                    do_ls(tempptr, ls_);
+                    free(tempptr);
                 }
             }
         }
