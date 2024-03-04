@@ -36,7 +36,15 @@ void do_ls(char *dirname, int ls_[])
     long filetime[256];
     char **filename = NULL;
 
-    DIR *dir = opendir(dirname);
+    DIR *dir;
+    if (strcmp(dirname, "/") == 0)
+    {
+        dir = opendir("/");
+    }
+    else
+    {
+        dir = opendir(dirname);
+    }
     if (dir == NULL)
     {
         perror("Error opening file");
